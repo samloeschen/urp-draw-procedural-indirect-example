@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: NewDrawProceduralIndirectExampleFeature
   m_EditorClassIdentifier: 
   m_Active: 1
+  material: {fileID: 2100000, guid: 7c6ce45f979cfe9489c4cca4504a2d6c, type: 2}
   kernels: {fileID: 7200000, guid: d6f2c434331236848aafed1468f8180a, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:

@@ -6,11 +6,12 @@ using UnityEngine.Rendering.Universal;
 using Unity.Collections.LowLevel.Unsafe;
 
 public class DrawProceduralIndirectExampleFeature : ScriptableRendererFeature {
+    public Material material;
     public ComputeShader kernels;
     DrawProceduralIndirectExamplePass _renderPass;
 
     public override void Create() {
-        _renderPass = new DrawProceduralIndirectExamplePass(RenderPassEvent.AfterRenderingOpaques, kernels);
+        _renderPass = new DrawProceduralIndirectExamplePass(RenderPassEvent.AfterRenderingOpaques, kernels, material);
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData) {
@@ -25,7 +26,8 @@ public class DrawProceduralIndirectExamplePass : ScriptableRenderPass {
     ComputeBuffer _indirectArgs;
     MaterialPropertyBlock _mpb;
 
-    public DrawProceduralIndirectExamplePass(RenderPassEvent renderPassEvent, ComputeShader kernels) {
+    public DrawProceduralIndirectExamplePass(RenderPassEvent renderPassEvent, ComputeShader kernels, Material material) {
+        _material = material;
         _kernels = kernels;
         _vertexData = new ComputeBuffer(3, UnsafeUtility.SizeOf<Vertex>(), ComputeBufferType.Structured);
         _indirectArgs = new ComputeBuffer(4, sizeof(uint), ComputeBufferType.IndirectArguments);
@@ -37,10 +39,6 @@ public class DrawProceduralIndirectExamplePass : ScriptableRenderPass {
 
     public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData) {
         var cmd = CommandBufferPool.Get("DrawProceduralIndirectExample");
-        if (_material is null) {
-            _material = new Material(Shader.Find("Unlit/DrawProceduralIndirectExample"));
-        }
-
         // populatet the mesh data buffer
         cmd.SetComputeBufferParam(_kernels, 0, "_VertexDataRW", _vertexData);
         cmd.DispatchCompute(_kernels, 0, 1, 1, 1);
