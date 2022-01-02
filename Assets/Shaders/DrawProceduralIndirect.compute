@@ -1,0 +1,24 @@
+﻿#include "Common.hlsl"
+
+#pragma kernel GenerateTriangle
+[numthreads(1,1,1)]
+void GenerateTriangle (uint id : SV_DispatchThreadID) {
+    if (id != 0) return;
+    
+    _VertexDataRW[0].position = float3(-0.5, -0.5, 0.0);
+    _VertexDataRW[0].color = float4(1.0, 0.0, 0.0, 1.0);
+
+    _VertexDataRW[1].position = float3(0.0, 0.5, 0.0);
+    _VertexDataRW[1].color = float4(0.0, 1.0, 0.0, 1.0);
+
+    _VertexDataRW[2].position = float3(0.5, -0.5, 0.0);
+    _VertexDataRW[2].color = float4(0.0, 0.0, 1.0, 1.0);
+}
+
+RWStructuredBuffer<uint4> _IndirectArgs;  
+#pragma kernel PopulateIndirectArgs
+[numthreads(1,1,1)]
+void PopulateIndirectArgs (uint id : SV_DispatchThreadID) {
+    if (id != 0) return;
+    _IndirectArgs[0] = uint4(3, 1, 0, 0);
+}
